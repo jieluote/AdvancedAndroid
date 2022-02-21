@@ -1,0 +1,40 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jieluote.asmplugin'  //gradle-plugin/xxx.properties文件
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "27.0.3"
+
+    defaultConfig {
+        applicationId "com.jieluote.advancedandroid"
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+
+    //APT相关
+    implementation project(':annotationlib') //注解(声明)
+    annotationProcessor project(':annotationProcessorlib') //注解处理器
+
+    //AMS相关
+    implementation project(path: ':asmlib')
+}

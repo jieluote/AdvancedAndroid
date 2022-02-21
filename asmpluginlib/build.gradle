@@ -1,0 +1,35 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+dependencies {
+    //gradle plugin
+    implementation gradleApi()
+    implementation localGroovy()
+
+    //引入Transform
+    implementation 'com.android.tools.build:gradle:4.1.1'
+
+    //io工具类
+    implementation files('libs\\commons-io-1.4.jar')
+}
+
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        //打包到本地，即和当前插件module同级的repo文件夹下
+        repository(url: uri('../repo'))
+
+        //打包到远程服务器
+        //repository(url: "http://www.xxx.com/repos") {
+        //    authentication(userName: "admin", password: "admin")
+        // }
+        pom.groupId = 'com.jieluote'
+        pom.artifactId = 'asmplugin'
+        pom.version = '1.0.0'
+    }
+}

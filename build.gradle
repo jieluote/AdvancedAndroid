@@ -1,0 +1,27 @@
+// 插件配置
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven {
+            url uri("/repo")
+        }
+    }
+    //依赖的插件
+    dependencies {
+        //classpath group:module:version (如果指定了artifactId 那么就替换module)
+        classpath "com.android.tools.build:gradle:4.1.1"
+        classpath "com.jieluote:asmplugin:1.0.0"  //依赖gradle插件
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

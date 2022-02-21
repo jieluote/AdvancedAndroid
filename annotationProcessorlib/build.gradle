@@ -1,0 +1,16 @@
+plugins {
+    id 'java-library'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    implementation 'com.google.auto.service:auto-service:1.0-rc7' //将处理器注册到javac中(在META-INF中生成文件),无需手动执行javac -process xx命令
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc7' //不能少,否则不会调用注解处理器
+    implementation project(':annotationlib')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.squareup:javapoet:1.10.0' //生成java文件,不需要手动拼接
+}

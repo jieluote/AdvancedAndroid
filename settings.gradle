@@ -1,0 +1,6 @@
+include ':asmpluginlib'
+include ':asmlib'
+include ':annotationProcessorlib'
+include ':annotationlib'
+include ':app'
+rootProject.name = "AdvancedAndroid"
