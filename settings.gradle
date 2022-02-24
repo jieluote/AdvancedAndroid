@@ -1,3 +1,5 @@
+include ':androidpluginlib'
+include ':androidpluginapk'
 include ':asmpluginlib'
 include ':asmlib'
 include ':annotationProcessorlib'

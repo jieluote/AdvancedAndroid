@@ -3,11 +3,13 @@ package com.jieluote.advancedandroid;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.jieluote.androidpluginlib.PluginManager;
+import com.jieluote.androidpluginlib.ProxyActivity;
 import com.jieluote.annotationlib.saveFileAnnotation;
-import com.jieluote.asmlib.ClassUtils;
 import com.jieluote.asmlib.TrackMethod;
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,7 +25,6 @@ public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getName();
     public static final String PATH = Environment.getExternalStorageDirectory().getPath();
     private static final int REQUEST_CODE = 100;
-
     private static String[] REQUEST_PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -76,10 +77,13 @@ public class MainActivity extends Activity {
 
     private void startBusiness() {
         //1.apt test
-        aptMethod();
+        demo1_testAPT();
 
         //2.asm test
-        asmMethod();
+        demo2_testASM();
+
+        //3.plugin proxy test
+        demo3_testProxyPlugin();
     }
 
     /**
@@ -89,7 +93,7 @@ public class MainActivity extends Activity {
      * (具体逻辑见 AnnotationProcessor})
      */
     @saveFileAnnotation()
-    public void aptMethod(){
+    public void demo1_testAPT(){
         Log.d(TAG,"run aptMethod");
     }
 
@@ -98,12 +102,25 @@ public class MainActivity extends Activity {
      * 添加了TrackMethod注解的方法,当运行时会自动在方法前后各打印一条日志
      */
     @TrackMethod(parameter = "aopMethodParam")
-    public void asmMethod() {
+    public void demo2_testASM() {
         Log.d(TAG,"run asmMethod");
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 插件化-动态代理方式加载
+     */
+    private void demo3_testProxyPlugin() {
+        if(PluginManager.getInstance().checkHasPlugin(this)){
+            PluginManager.getInstance().loadApk(PluginManager.getInstance().getAPKPath(this),this);
+            //跳转到代理Activity
+            Intent intent = new Intent(MainActivity.this, ProxyActivity.class);
+            intent.putExtra("className","com.jieluote.androidpluginapk.PluginActivity");
+            startActivity(intent);
         }
     }
 }

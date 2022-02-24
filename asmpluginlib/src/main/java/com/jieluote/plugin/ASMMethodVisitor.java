@@ -47,7 +47,7 @@ public class ASMMethodVisitor extends AdviceAdapter {
         super.onMethodEnter();
         if (needInject) {
             System.out.println("onMethodEnter");
-            //注入以下代码:  Log.d("asmtest","aopMethod start parameter is :"+parameter);
+            //注入以下代码:  Log.d("asmtest","aopMethod start parameter is :"+parameter); 可使用插件ASM Bytecode Viewer将java代码翻译成字节码语句
             methodVisitor.visitLdcInsn("asmtest");
             methodVisitor.visitLdcInsn("aopMethod start, parameter is :" + parameter);
             methodVisitor.visitMethodInsn(INVOKESTATIC, "android/util/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)I", false);

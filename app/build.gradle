@@ -37,4 +37,7 @@ dependencies {
 
     //AMS相关
     implementation project(path: ':asmlib')
+
+    //插件化相关
+    implementation project(path: ':androidpluginlib')
 }
