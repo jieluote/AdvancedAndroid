@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AdvancedAndroid</string>
+    <string name="activity_text">Main Activity Run!</string>
 </resources>

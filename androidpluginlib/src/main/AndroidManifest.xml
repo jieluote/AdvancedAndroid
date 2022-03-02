@@ -4,7 +4,7 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-        <activity android:name=".ProxyActivity">
+        <activity android:name=".proxy.ProxyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
