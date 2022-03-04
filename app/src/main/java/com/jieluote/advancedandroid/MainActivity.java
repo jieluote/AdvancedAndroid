@@ -16,16 +16,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.TextView;
 
 /**
  * APT: 在编译期间指定注解处理器,可以在编译期间执行一些逻辑,比如生成java文件(可借助javapoet),详见 AnnotationProcessor 类
  * Transform: Android官方提供的构建插件,在class被打包为dex前的间隙,提供修改class的机会(DVM不能直接以流的方式读取class文件,JVM则可以),详见 ASMTransform 类
  * ASM: ASM是一个Java字节码修改工具(类库),可直接修改class文件(读取->修改->写回), 详见 ASMClassVisitor、ASMMethodVisitor 类
  * 插件化: 宿主APK加载另外一个插件APK(项目)中的资源(dex、resources等),目的避免APK过大、频繁升级、团队协作门槛高等问题,详见 androidpluginlib 库
+ * Xposed:被誉为Hook之王,由框架和模块(自己实现的APP)两部分组成,可以用于Java层的任意Hook(也可替换资源、布局等),不过前提需要root,因为需要替换/system/bin/app_process等系统文件
  */
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getName();
     public static final String PATH = Environment.getExternalStorageDirectory().getPath();
+    private TextView mTv;
     private static final int REQUEST_CODE = 100;
     private static String[] REQUEST_PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -36,6 +39,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mTv = findViewById(R.id.activity_tv);
         requestPermion();
     }
 
@@ -87,12 +91,15 @@ public class MainActivity extends Activity {
         //3.plugin proxy test
         //demo3_testProxyPlugin();
 
-        //3.plugin hook test
-        demo4_testHookPlugin();
+        //4.plugin hook test
+        //demo4_testHookPlugin();
+
+        //5.xposed hook test
+        demo5_testXposed();
     }
 
     /**
-     * 测试APT方法
+     * 测试APT方法(此方法空实现,只是一个功能说明)
      * 添加了saveFileAnnotation注解的方法,无需调用,在编译期就会自动生成一个.java文件
      * 路径为 \app\build\generated\ap_generated_sources\debug\out\com\jieluote\advancedandroid
      * (具体逻辑见 AnnotationProcessor})
@@ -152,5 +159,30 @@ public class MainActivity extends Activity {
             intent.putExtra(PluginConstants.RUN_MODE, PluginConstants.RUN_MODE_PLUGIN_HOOK);
             startActivity(intent);
         }
+    }
+
+    /**
+     * Hook技术-Xposed,用来魔改任何应用java层代码(此方法空实现,只是一个功能说明)
+     * Xposed 官网：http://repo.xposed.info/
+     * Xposed 项目 github 地址：https://github.com/rovo89
+     * Xposed 官方教程 :https://github.com/rovo89/XposedBridge/wiki/Development-tutorial
+     * Xposed Api 之XposedBridge.jar 下载:https://jcenter.bintray.com/de/robv/android/xposed/api/
+     * ————————————————————————————————————————————————
+     *
+     * Xposed使用前提 :
+     *   1.设备Root
+     *   2.系统版本7.0及以下(对ART支持不好)
+     *   3.需要安装 Xposed Installer APK(Xposed框架),用于下载刷机包,并替换zygote进程等文件(也可以自己实现，参考https://www.jianshu.com/p/6b4a80654d4e)
+     * 这些要求比较麻烦,我是直接用的夜神模拟器 https://support.yeshen.com/zh-CN/qt/xp
+     * Xposed使用步骤:
+     *   1.在app下的AndroidManifest.xml中添加meta-data信息,这样可以让框架识别出你的应用是一个Xposed模块,从而具有Hook能力
+     *   2.compileOnly 'de.robv.android.xposed:api:82' (注意不能是implementation,否则报错),相当于引入XposedBridgeAPI
+     *   3.新建类实现 IXposedHookLoadPackage,重写handleLoadPackage方法,在里面实现Hook逻辑
+     *   4.assets下新建名为"xposed_init"的文本文件,里面为类的全类名,目的让Xposed模块找到入口,用来启动Hook程序
+     *   2-4见xposedlib
+     *   备注: 如果运行有什么问题,可以在logcat中查看"Xposed"日志
+     */
+    private void demo5_testXposed() {
+        Log.d(TAG, "run demo5_testXposed");
     }
 }

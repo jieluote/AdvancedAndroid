@@ -3,10 +3,11 @@
 #### 介绍
 主要是集合了一些Android较有深度的技术点demo,有助于我们对Android的理解更深入一层</br>
 目前包括(未来还会不断更新)</br>
-- Demo1:Annotation(注解) + APT(注解处理器) + Javapoet (ARoute,EventBus,ButterKnife等)</br>
-- Demo2.ASM + Transform + Gradle Plugin(自定义插件) (无埋点监控,无感知织入,AOP切面编程等)</br>
+- Demo1:Annotation(注解) + APT(注解处理器) + Javapoet (用于ARoute,EventBus,ButterKnife等)</br>
+- Demo2.ASM + Transform + Gradle Plugin(自定义插件) (用于无埋点监控,无感知织入,AOP切面编程等)</br>
 - Demo3.插件化-静态代理 + 反射 + 接口回调 实现 (借鉴dynamic-load-apk原理)
 - Demo4.插件化-hook Instrument
+- Demo5.Hook技术-Xposed(用于热修复、AOP)
 
 #### 详细
 1.Demo1对应 annotationlib、annotationProcessorlib</br>
@@ -32,6 +33,15 @@
   不同于demo3的插件Activity完全依附在代理Activity中,并没有自己的上下文环境</br>
   Hook的方式是启动完整的具有生命周期的Activity,只不过在启动验证的阶段通过提前放置"占坑"Activity欺骗过AMS的验证,在启动后再</br>
   替换为插件Activity。同时需要注意解决资源冲突的问题。
+  
+5.Demo5对应 xposedlib
+  Xposed的Hook技术已经跳出了虚拟机层面,直接在创建JVM前就下了手脚, 通过替换zygote进程实现了控制手机上所有app进程。</br>
+  拿到了进程后再将需要hook的函数注册为Native层函数。当执行到这一函数是虚拟机会优先执行Native层函数,然后再去执行Java层函数,达到Hook目的。</br>
+  *扩展:*</br>
+  Xposed因为要替换系统文件,所以需要设备root,这无疑提高了使用门槛,通常用于游戏外挂。</br>
+  阿里开源的Dexposed,基于Xposed,无需root(只修改本应用,不能修改其它应用),更适合应用开发(AOP、监控、热修复)，但不支持Android5.0以上的ART内核。</br>
+  被同阿里系的Andfix、Hotfix、Sophix代替
+    
   
 #### 使用
 在app - MainActivity中统一执行/调用,每个模块都有详细注释

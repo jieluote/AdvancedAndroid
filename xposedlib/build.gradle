@@ -1,18 +1,19 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.jieluote.asmplugin'  //gradle-plugin/xxx.properties文件
+plugins {
+    id 'com.android.library'
+}
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "27.0.3"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.jieluote.advancedandroid"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -30,18 +31,10 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    //APT相关
-    implementation project(':annotationlib') //注解(声明)
-    annotationProcessor project(':annotationProcessorlib') //注解处理器
-
-    //AMS相关
-    implementation project(path: ':asmlib')
-
-    //插件化相关
-    implementation project(path: ':androidpluginlib')
-
-    //xposed相关
-    implementation project(path: ':xposedlib')
-
+    compileOnly 'de.robv.android.xposed:api:82'
+    compileOnly 'de.robv.android.xposed:api:82:sources'
 }

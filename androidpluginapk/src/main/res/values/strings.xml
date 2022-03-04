@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">AndroidPluginAPK</string>
-    <string name="activity_text">Plugin Activity Run!</string>
+    <string name="activity_text">AdvancedAndroid Plugin Activity Run!</string>
 
 </resources>
