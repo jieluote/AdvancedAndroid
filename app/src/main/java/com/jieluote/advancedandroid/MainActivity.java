@@ -8,6 +8,8 @@ import com.jieluote.androidpluginlib.proxy.PluginConstants;
 import com.jieluote.androidpluginlib.proxy.ProxyActivity;
 import com.jieluote.annotationlib.saveFileAnnotation;
 import com.jieluote.asmlib.TrackMethod;
+import com.jieluote.spilib.IAndroidLanguage;
+import com.jieluote.spilib.IWebLanguage;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -17,13 +19,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.TextView;
+import java.util.ServiceLoader;
 
 /**
  * APT: 在编译期间指定注解处理器,可以在编译期间执行一些逻辑,比如生成java文件(可借助javapoet),详见 AnnotationProcessor 类
+ * SPI: Service Provider Interface,是一种服务发现机制。它通过在ClassPath路径下的META-INF/services文件夹查找文件,自动加载文件里所定义的类,配合使用的一般有ServiceLoader类,AutoService注解
  * Transform: Android官方提供的构建插件,在class被打包为dex前的间隙,提供修改class的机会(DVM不能直接以流的方式读取class文件,JVM则可以),详见 ASMTransform 类
  * ASM: ASM是一个Java字节码修改工具(类库),可直接修改class文件(读取->修改->写回), 详见 ASMClassVisitor、ASMMethodVisitor 类
  * 插件化: 宿主APK加载另外一个插件APK(项目)中的资源(dex、resources等),目的避免APK过大、频繁升级、团队协作门槛高等问题,详见 androidpluginlib 库
- * Xposed:被誉为Hook之王,由框架和模块(自己实现的APP)两部分组成,可以用于Java层的任意Hook(也可替换资源、布局等),不过前提需要root,因为需要替换/system/bin/app_process等系统文件
+ * Xposed:被誉为Hook之王,由框架和模块(自己实现的APP)两部分组成,可以用于Java层的任意Hook(也可替换资源、布局等),不过前提需要root,因为需要替换/system/bin/app_process等系统文件，详见 XposedInit 类
  */
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getName();
@@ -85,17 +89,48 @@ public class MainActivity extends Activity {
         //1.apt test
         //demo1_testAPT();
 
-        //2.asm test
+        //2.spi test
+        //demo1_testSPI();
+
+        //3.asm test
         //demo2_testASM();
 
-        //3.plugin proxy test
+        //4.plugin proxy test
         //demo3_testProxyPlugin();
 
-        //4.plugin hook test
+        //5.plugin hook test
         //demo4_testHookPlugin();
 
-        //5.xposed hook test
-        demo5_testXposed();
+        //6.xposed hook test
+        //demo5_testXposed();
+    }
+
+    /**
+     * SPI步骤:
+     * 1.定义一个接口文件 ILanguage
+     * 2.写出多个该接口文件的实现 Java、Kotlin
+     * 3.在src/main/resources/下建立 /META-INF/services 目录,新增一个以接口命名的文件,内容是接口实现类全路径
+     * 4.使用java.util.ServiceLoader 类获此接口的所有实现类(最终由Class.forName创建)
+     *
+     * AutoService:
+     * Google提供的开源库,自动生成目录,不必手动添加(注意 Java、Kotlin和 JavaScript 的区别)
+     *
+     * 编译后,
+     * 手动方式 接口文件文件位于     lib\build\resources\main\META-INF\services
+     * AutoService方式 接口文件位于 lib\build\classes\java\main\META-INF\services
+     */
+    private void demo1_testSPI() {
+        Log.d(TAG,"run demo1_testSPI");
+        //获取接口实现类(手动方式)
+        ServiceLoader<IAndroidLanguage> androidLanguages = ServiceLoader.load(IAndroidLanguage.class);
+        for (IAndroidLanguage language : androidLanguages) {
+            Log.d(TAG,"android language:"+ language.name());
+        }
+        //获取接口实现类(AutoService方式)
+        ServiceLoader<IWebLanguage> webLanguages = ServiceLoader.load(IWebLanguage.class);
+        for (IWebLanguage language : webLanguages) {
+            Log.d(TAG,"web language:"+ language.name());
+        }
     }
 
     /**

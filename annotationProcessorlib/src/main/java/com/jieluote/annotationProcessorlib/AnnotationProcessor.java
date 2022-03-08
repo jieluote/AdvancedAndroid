@@ -29,8 +29,9 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
-
-@AutoService(Processor.class) //important
+//AutoService important, Through the interface find implement class
+//build/classes/java/main/META-INF/services/javax.annotation.processing.Processor
+@AutoService(Processor.class)
 public class AnnotationProcessor extends AbstractProcessor {
 
     @Override

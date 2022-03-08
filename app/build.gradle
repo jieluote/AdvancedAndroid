@@ -33,6 +33,7 @@ dependencies {
 
     //APT相关
     implementation project(':annotationlib') //注解(声明)
+    implementation project(':annotationProcessorlib')
     annotationProcessor project(':annotationProcessorlib') //注解处理器
 
     //AMS相关

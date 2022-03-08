@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/asmlib" />
             <option value="$PROJECT_DIR$/asmpluginlib" />
+            <option value="$PROJECT_DIR$/xposedlib" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
